@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#10201E">
+    <meta
+        name="description"
+        content="Read Gates of Okinawa in an immersive EPUB web reader with fullscreen controls, saved progress, TOC navigation, and touch gestures."
+    >
+    <title>Gates of Okinawa | Reader</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-dark reader-page">
+    <div id="dev-splash" class="dev-splash" role="button" aria-label="Dismiss splash screen">
+        <div class="dev-splash-inner">
+            <div class="splash-glyph" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="splash-text-block">
+                <p class="splash-kicker">Enter the gates</p>
+                <h1 class="splash-title">Gates of Okinawa</h1>
+                <p class="splash-subtitle">EPUB Reader Edition</p>
+            </div>
+            <p class="splash-hint">Tap anywhere to enter</p>
+        </div>
+    </div>
+
+    <div id="app-container">
+        <nav id="hud-top" class="hud-element" aria-label="Reader controls">
+            <button id="menu-btn" type="button" aria-controls="side-menu" aria-expanded="false">Contents</button>
+            <span class="book-title">Gates of Okinawa</span>
+
+            <div class="hud-controls">
+                <div class="control-group nav-group" aria-label="Site navigation">
+                    <a class="button-link inline-link" href="index.html">Home</a>
+                </div>
+
+                <div id="font-controls" class="control-group" aria-label="Font size controls">
+                    <button id="font-decrease" type="button" aria-label="Decrease font size">A-</button>
+                    <button id="font-increase" type="button" aria-label="Increase font size">A+</button>
+                </div>
+
+                <div id="theme-controls" class="control-group" aria-label="Theme controls">
+                    <button type="button" data-theme="light">Paper</button>
+                    <button type="button" data-theme="sepia">Dusk</button>
+                    <button type="button" data-theme="dark">Night</button>
+                </div>
+
+                <div id="window-controls" class="control-group" aria-label="Window controls">
+                    <button id="fullscreen-btn" type="button" aria-pressed="false" title="Toggle fullscreen">Fullscreen</button>
+                </div>
+            </div>
+        </nav>
+
+        <aside id="side-menu" class="closed" aria-label="Table of Contents">
+            <div class="side-menu-header">
+                <h2>Table of Contents</h2>
+                <button id="menu-close-btn" type="button" aria-label="Close table of contents">Close</button>
+            </div>
+            <ul id="toc-list"></ul>
+        </aside>
+
+        <div id="viewer" aria-label="Book reader"></div>
+
+        <nav id="hud-bottom" class="hud-element" aria-label="Reading status">
+            <div class="hud-left">
+                <span id="location-indicator">Opening Gates of Okinawa...</span>
+            </div>
+
+            <div class="hud-center" aria-hidden="true">
+                <div class="progress-track">
+                    <span id="progress-fill"></span>
+                </div>
+            </div>
+
+            <div class="hud-right">
+                <span id="hud-hint">Tap center for controls</span>
+            </div>
+        </nav>
+    </div>
+
+    <script src="assets/vendor/jszip.min.js"></script>
+    <script src="assets/vendor/epub.min.js"></script>
+    <script src="assets/vendor/hammer.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
