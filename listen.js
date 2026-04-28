@@ -1,5 +1,6 @@
 const MANIFEST_PATH = "manifest.json";
 const AUDIO_DIR = "audio/";
+const GITHUB_MEDIA_AUDIO_BASE = "https://media.githubusercontent.com/media/KgitWH21/gates-of-okinawa-reader-app/main/audio/";
 const SLEEP_TIMER_KEY = "gatesOfOkinawa.listening.sleepTimer";
 const FADE_DURATION_SECONDS = 10;
 const END_OF_TRACK_EPSILON = 0.35;
@@ -125,15 +126,60 @@ function resolveTrackPath(fileName) {
 
 async function checkAudioAvailability(filePath) {
     if (!filePath) {
-        return false;
+        return null;
     }
 
     try {
         const response = await fetch(filePath, { method: "HEAD" });
-        return response.ok;
+        return response;
     } catch (error) {
+        return null;
+    }
+}
+
+function isLikelyLfsPointerResponse(response) {
+    if (!response?.ok) {
         return false;
     }
+
+    const contentType = (response.headers.get("content-type") || "").toLowerCase();
+    const contentLength = Number(response.headers.get("content-length") || "0");
+
+    return (
+        contentType.includes("text/plain") ||
+        (Number.isFinite(contentLength) && contentLength > 0 && contentLength < 1024)
+    );
+}
+
+function buildGitHubMediaPath(fileName) {
+    return `${GITHUB_MEDIA_AUDIO_BASE}${String(fileName)
+        .split("/")
+        .map((segment) => encodeURIComponent(segment))
+        .join("/")}`;
+}
+
+async function resolvePlayableTrackPath(track) {
+    if (!track?.file) {
+        return "";
+    }
+
+    if (track.url) {
+        return track.url;
+    }
+
+    const localPath = resolveTrackPath(track.file);
+    const localResponse = await checkAudioAvailability(localPath);
+    if (localResponse?.ok && !isLikelyLfsPointerResponse(localResponse)) {
+        return localPath;
+    }
+
+    const mediaPath = buildGitHubMediaPath(track.file);
+    const mediaResponse = await checkAudioAvailability(mediaPath);
+    if (mediaResponse?.ok && !isLikelyLfsPointerResponse(mediaResponse)) {
+        return mediaPath;
+    }
+
+    return "";
 }
 
 async function readManifestFile() {
@@ -352,15 +398,14 @@ async function selectTrack(index, options = {}) {
         return;
     }
 
-    const nextSource = resolveTrackPath(track.file);
     setStatus(`Loading ${track.title}...`);
 
-    const available = await checkAudioAvailability(nextSource);
-    if (!available) {
+    const nextSource = await resolvePlayableTrackPath(track);
+    if (!nextSource) {
         elements.audio.removeAttribute("src");
         elements.audio.dataset.file = "";
         elements.audio.load();
-        setStatus(`Audio not found: ${track.file}. Add it to /audio or update manifest.json.`, true);
+        setStatus(`Audio not found: ${track.file}. Check the audio upload or manifest.json.`, true);
         updateTimeDisplay();
         updatePlayPauseButton();
         updateNavigationState();
@@ -424,8 +469,14 @@ function safePlay(trackTitle) {
             setStatus(`Playing ${trackTitle}.`);
             updatePlayPauseButton();
         })
-        .catch(() => {
-            setStatus(`Loaded ${trackTitle}. Press Play to begin listening.`);
+        .catch((error) => {
+            if (error?.name === "NotAllowedError") {
+                setStatus(`Loaded ${trackTitle}. Tap Play to begin listening.`);
+                updatePlayPauseButton();
+                return;
+            }
+
+            setStatus(`This browser could not play ${trackTitle}. Try reloading the page.`, true);
             updatePlayPauseButton();
         });
 }
