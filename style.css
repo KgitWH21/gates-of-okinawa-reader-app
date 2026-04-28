@@ -419,10 +419,51 @@ button:disabled {
 .hud-controls,
 .control-group,
 .hud-left,
-.hud-right {
+.hud-right,
+.reader-options-wrap {
     display: flex;
     align-items: center;
     gap: 8px;
+}
+
+.reader-options-wrap {
+    position: relative;
+}
+
+.reader-options-button {
+    min-width: 44px;
+    min-height: 40px;
+    font-size: 1.15rem;
+}
+
+.reader-options-menu {
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+    width: min(360px, calc(100vw - 28px));
+    padding: 12px;
+    border-radius: 8px;
+    background:
+        var(--chrome-bg, linear-gradient(180deg, rgba(14, 31, 31, 0.98), rgba(10, 22, 22, 0.96)));
+    border: 1px solid var(--chrome-border, var(--panel-border));
+    box-shadow: var(--shadow-strong);
+    flex-direction: column;
+    align-items: stretch;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-6px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.reader-options-menu.open {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+.reader-options-menu .control-group {
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
 .hud-left,
@@ -778,9 +819,8 @@ body.is-fullscreen #side-menu.open {
 }
 
 .listen-card .mode-art {
-    width: 100%;
-    max-width: 460px;
-    aspect-ratio: 16 / 9;
+    width: min(100%, 320px);
+    aspect-ratio: 1 / 1;
 }
 
 .mode-card h2,
@@ -855,7 +895,7 @@ body.is-fullscreen #side-menu.open {
 
 .audio-cover {
     width: 100%;
-    aspect-ratio: 16 / 9;
+    aspect-ratio: 1 / 1;
     object-fit: cover;
     border-radius: 8px;
     box-shadow: 0 18px 38px rgba(0, 0, 0, 0.36);
@@ -1105,6 +1145,11 @@ body.is-fullscreen #side-menu.open {
         width: 100%;
         justify-content: center;
         flex-wrap: wrap;
+    }
+
+    .reader-options-menu {
+        width: min(360px, calc(100vw - 28px));
+        flex-wrap: nowrap;
     }
 
     #hud-bottom {

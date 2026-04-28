@@ -104,6 +104,8 @@ const elements = {
     locationIndicator: document.getElementById("location-indicator"),
     progressFill: document.getElementById("progress-fill"),
     fullscreenButton: document.getElementById("fullscreen-btn"),
+    readerOptionsButton: document.getElementById("reader-options-btn"),
+    readerOptionsMenu: document.getElementById("reader-options-menu"),
     fontDecreaseButton: document.getElementById("font-decrease"),
     fontIncreaseButton: document.getElementById("font-increase"),
     themeButtons: Array.from(document.querySelectorAll("[data-theme]")),
@@ -193,6 +195,30 @@ function closeSideMenu() {
 
     if (isFullscreen()) {
         scheduleHudHide();
+    }
+}
+
+function openReaderOptions() {
+    elements.readerOptionsMenu?.classList.add("open");
+    elements.readerOptionsButton?.setAttribute("aria-expanded", "true");
+    showHUD();
+    clearHudHideTimer();
+}
+
+function closeReaderOptions() {
+    elements.readerOptionsMenu?.classList.remove("open");
+    elements.readerOptionsButton?.setAttribute("aria-expanded", "false");
+
+    if (isFullscreen()) {
+        scheduleHudHide();
+    }
+}
+
+function toggleReaderOptions() {
+    if (elements.readerOptionsMenu?.classList.contains("open")) {
+        closeReaderOptions();
+    } else {
+        openReaderOptions();
     }
 }
 
@@ -781,6 +807,10 @@ elements.menuButton?.addEventListener("click", () => {
 });
 
 elements.menuCloseButton?.addEventListener("click", closeSideMenu);
+elements.readerOptionsButton?.addEventListener("click", (event) => {
+    event.stopPropagation();
+    toggleReaderOptions();
+});
 elements.fontDecreaseButton?.addEventListener("click", () => changeFontSize(-1));
 elements.fontIncreaseButton?.addEventListener("click", () => changeFontSize(1));
 
@@ -817,6 +847,20 @@ document.addEventListener("keydown", (event) => {
 
     if (event.key === "Escape" && elements.sideMenu?.classList.contains("open")) {
         closeSideMenu();
+    }
+
+    if (event.key === "Escape" && elements.readerOptionsMenu?.classList.contains("open")) {
+        closeReaderOptions();
+    }
+});
+
+document.addEventListener("click", (event) => {
+    if (
+        elements.readerOptionsMenu?.classList.contains("open") &&
+        !elements.readerOptionsMenu.contains(event.target) &&
+        !elements.readerOptionsButton?.contains(event.target)
+    ) {
+        closeReaderOptions();
     }
 });
 

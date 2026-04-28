@@ -23,6 +23,7 @@ The root `index.html` is a mode selector that links to both modes.
 - Use `assets/gates-of-okinawa-cover.png` for the reader and home card
 - Use `assets/gates-of-okinawa-audiobook-cover.png` for the audiobook mode
 - The reader loads EPUB.js dependencies from `/assets/vendor`
+- Audiobook MP3 files are tracked with Git LFS via `.gitattributes`
 
 ## Audiobook manifest
 
@@ -33,7 +34,7 @@ The audiobook page is driven by `manifest.json` at the project root. Supported f
   {
     "id": 1,
     "title": "Chapter 1",
-    "file": "chapter-01.mp3",
+    "file": "chapter_01.mp3",
     "chapterLabel": "Chapter 01",
     "duration": 0
   }
@@ -44,6 +45,7 @@ The audiobook page is driven by `manifest.json` at the project root. Supported f
 - `chapterLabel` is optional and lets you override the track label shown in the list
 - `duration` is optional metadata if you want to store it for your own bookkeeping
 - `file` is usually resolved relative to `/audio`, but direct relative or absolute paths also work if needed during migration
+- Current chapter files use the `chapter_01.mp3` naming pattern, ending with `chapter_83_epilogue.mp3`
 
 ## Saved progress
 
