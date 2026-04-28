@@ -3,41 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#10201E">
+    <meta name="theme-color" content="#091416">
     <meta
         name="description"
-        content="Open Gates of Okinawa by Keith Hayden in a cinematic EPUB reading app with saved progress, immersive controls, and atmospheric dark styling."
+        content="Choose the Gates of Okinawa reader or audiobook experience, with saved progress for each mode."
     >
-    <title>Gates of Okinawa | Reading App</title>
+    <title>Gates of Okinawa | Read or Listen</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="theme-dark home-page">
+<body class="theme-dark home-page mode-selector">
     <main class="mode-shell">
-        <section class="hero-card">
+        <section class="hero-card selector-hero">
             <div class="hero-brand">
                 <img src="assets/hack-studios-logo.png" alt="HAC Studios logo" class="hero-logo">
-                <div>
-                    <p class="eyebrow">HAC Studios</p>
-                    <p class="brand-subline">Reader Edition</p>
-                </div>
+                <p class="eyebrow">HAC Studios</p>
             </div>
 
-            <div class="hero-stage">
-                <div class="hero-art-frame">
-                    <img src="assets/gates-cover.jpg" alt="Gates of Okinawa cover" class="hero-cover">
-                </div>
+            <div class="hero-copy">
+                <p class="hero-kicker">A twin-mode edition</p>
+                <h1>Gates of Okinawa</h1>
+                <p class="hero-summary">By Keith Hayden</p>
+            </div>
 
-                <div class="hero-copy">
-                    <p class="hero-kicker">Supernatural horror adventure</p>
-                    <h1>Gates of Okinawa</h1>
-                    <p class="hero-summary">By Keith Hayden</p>
-                    <p class="hero-tagline">A teacher will become a hero or something horrible</p>
+            <div class="mode-grid">
+                <article class="mode-card read-card">
+                    <img src="assets/gates-of-okinawa-cover.png" alt="Gates of Okinawa book cover" class="mode-art">
+                    <h2>Read</h2>
+                    <p>Open the EPUB reader with touch navigation, themes, fullscreen controls, and saved reading position.</p>
+                    <a class="button-link primary-link" href="reader.html">Open Reader</a>
+                </article>
 
-                    <div class="hero-actions">
-                        <a class="button-link primary-link" href="reader.html">Start Reading</a>
-                        <p class="hero-note">Saved reading progress, theme, and font size continue automatically on this device.</p>
-                    </div>
-                </div>
+                <article class="mode-card listen-card">
+                    <img src="assets/gates-of-okinawa-audiobook-cover.png" alt="Gates of Okinawa audiobook cover" class="mode-art">
+                    <h2>Listen</h2>
+                    <p>Use the chapter player with saved track progress, speed control, and a sleep timer with fade-out.</p>
+                    <a class="button-link" href="listen.html">Open Audiobook</a>
+                </article>
             </div>
         </section>
     </main>

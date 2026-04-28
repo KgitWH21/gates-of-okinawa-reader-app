@@ -9,6 +9,12 @@ const MAX_FONT_SIZE = 180;
 const FONT_STEP = 10;
 
 const STORAGE_KEYS = {
+    readerLocation: "gatesOfOkinawa.reading.position",
+    readerTheme: "gatesOfOkinawa.reading.theme",
+    readerFontSize: "gatesOfOkinawa.reading.fontSize",
+};
+
+const LEGACY_STORAGE_KEYS = {
     readerLocation: "gatesOkinawa.reading.position",
     readerTheme: "gatesOkinawa.reading.theme",
     readerFontSize: "gatesOkinawa.reading.fontSize",
@@ -31,6 +37,33 @@ function safeStorageSet(key, value) {
     }
 }
 
+function safeStorageRemove(key) {
+    try {
+        window.localStorage.removeItem(key);
+    } catch (error) {
+        console.warn("Could not remove localStorage item:", error);
+    }
+}
+
+function migrateStorageKey(oldKey, newKey) {
+    const existingValue = safeStorageGet(newKey);
+    const legacyValue = safeStorageGet(oldKey);
+
+    if (existingValue === null && legacyValue !== null) {
+        safeStorageSet(newKey, legacyValue);
+    }
+
+    if (legacyValue !== null) {
+        safeStorageRemove(oldKey);
+    }
+}
+
+function migrateReaderStorageKeys() {
+    migrateStorageKey(LEGACY_STORAGE_KEYS.readerLocation, STORAGE_KEYS.readerLocation);
+    migrateStorageKey(LEGACY_STORAGE_KEYS.readerTheme, STORAGE_KEYS.readerTheme);
+    migrateStorageKey(LEGACY_STORAGE_KEYS.readerFontSize, STORAGE_KEYS.readerFontSize);
+}
+
 function loadStoredFontSize() {
     const storedValue = Number(safeStorageGet(STORAGE_KEYS.readerFontSize));
     if (!Number.isFinite(storedValue)) {
@@ -44,6 +77,8 @@ function loadStoredTheme() {
     const storedTheme = safeStorageGet(STORAGE_KEYS.readerTheme);
     return storedTheme || "dark";
 }
+
+migrateReaderStorageKeys();
 
 const state = {
     currentFontSize: loadStoredFontSize(),
