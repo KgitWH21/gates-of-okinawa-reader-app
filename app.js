@@ -9,6 +9,12 @@ const MAX_FONT_SIZE = 180;
 const FONT_STEP = 10;
 
 const STORAGE_KEYS = {
+    readerLocation: "gatesOfOkinawa.reading.position",
+    readerTheme: "gatesOfOkinawa.reading.theme",
+    readerFontSize: "gatesOfOkinawa.reading.fontSize",
+};
+
+const LEGACY_STORAGE_KEYS = {
     readerLocation: "gatesOkinawa.reading.position",
     readerTheme: "gatesOkinawa.reading.theme",
     readerFontSize: "gatesOkinawa.reading.fontSize",
@@ -31,6 +37,33 @@ function safeStorageSet(key, value) {
     }
 }
 
+function safeStorageRemove(key) {
+    try {
+        window.localStorage.removeItem(key);
+    } catch (error) {
+        console.warn("Could not remove localStorage item:", error);
+    }
+}
+
+function migrateStorageKey(oldKey, newKey) {
+    const existingValue = safeStorageGet(newKey);
+    const legacyValue = safeStorageGet(oldKey);
+
+    if (existingValue === null && legacyValue !== null) {
+        safeStorageSet(newKey, legacyValue);
+    }
+
+    if (legacyValue !== null) {
+        safeStorageRemove(oldKey);
+    }
+}
+
+function migrateReaderStorageKeys() {
+    migrateStorageKey(LEGACY_STORAGE_KEYS.readerLocation, STORAGE_KEYS.readerLocation);
+    migrateStorageKey(LEGACY_STORAGE_KEYS.readerTheme, STORAGE_KEYS.readerTheme);
+    migrateStorageKey(LEGACY_STORAGE_KEYS.readerFontSize, STORAGE_KEYS.readerFontSize);
+}
+
 function loadStoredFontSize() {
     const storedValue = Number(safeStorageGet(STORAGE_KEYS.readerFontSize));
     if (!Number.isFinite(storedValue)) {
@@ -44,6 +77,8 @@ function loadStoredTheme() {
     const storedTheme = safeStorageGet(STORAGE_KEYS.readerTheme);
     return storedTheme || "dark";
 }
+
+migrateReaderStorageKeys();
 
 const state = {
     currentFontSize: loadStoredFontSize(),
@@ -69,6 +104,8 @@ const elements = {
     locationIndicator: document.getElementById("location-indicator"),
     progressFill: document.getElementById("progress-fill"),
     fullscreenButton: document.getElementById("fullscreen-btn"),
+    readerOptionsButton: document.getElementById("reader-options-btn"),
+    readerOptionsMenu: document.getElementById("reader-options-menu"),
     fontDecreaseButton: document.getElementById("font-decrease"),
     fontIncreaseButton: document.getElementById("font-increase"),
     themeButtons: Array.from(document.querySelectorAll("[data-theme]")),
@@ -158,6 +195,30 @@ function closeSideMenu() {
 
     if (isFullscreen()) {
         scheduleHudHide();
+    }
+}
+
+function openReaderOptions() {
+    elements.readerOptionsMenu?.classList.add("open");
+    elements.readerOptionsButton?.setAttribute("aria-expanded", "true");
+    showHUD();
+    clearHudHideTimer();
+}
+
+function closeReaderOptions() {
+    elements.readerOptionsMenu?.classList.remove("open");
+    elements.readerOptionsButton?.setAttribute("aria-expanded", "false");
+
+    if (isFullscreen()) {
+        scheduleHudHide();
+    }
+}
+
+function toggleReaderOptions() {
+    if (elements.readerOptionsMenu?.classList.contains("open")) {
+        closeReaderOptions();
+    } else {
+        openReaderOptions();
     }
 }
 
@@ -746,6 +807,10 @@ elements.menuButton?.addEventListener("click", () => {
 });
 
 elements.menuCloseButton?.addEventListener("click", closeSideMenu);
+elements.readerOptionsButton?.addEventListener("click", (event) => {
+    event.stopPropagation();
+    toggleReaderOptions();
+});
 elements.fontDecreaseButton?.addEventListener("click", () => changeFontSize(-1));
 elements.fontIncreaseButton?.addEventListener("click", () => changeFontSize(1));
 
@@ -782,6 +847,20 @@ document.addEventListener("keydown", (event) => {
 
     if (event.key === "Escape" && elements.sideMenu?.classList.contains("open")) {
         closeSideMenu();
+    }
+
+    if (event.key === "Escape" && elements.readerOptionsMenu?.classList.contains("open")) {
+        closeReaderOptions();
+    }
+});
+
+document.addEventListener("click", (event) => {
+    if (
+        elements.readerOptionsMenu?.classList.contains("open") &&
+        !elements.readerOptionsMenu.contains(event.target) &&
+        !elements.readerOptionsButton?.contains(event.target)
+    ) {
+        closeReaderOptions();
     }
 });
 

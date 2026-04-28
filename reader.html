@@ -33,24 +33,36 @@
             <button id="menu-btn" type="button" aria-controls="side-menu" aria-expanded="false">Contents</button>
             <span class="book-title">Gates of Okinawa</span>
 
-            <div class="hud-controls">
-                <div class="control-group nav-group" aria-label="Site navigation">
-                    <a class="button-link inline-link" href="index.html">Home</a>
-                </div>
+            <div class="reader-options-wrap">
+                <button
+                    id="reader-options-btn"
+                    type="button"
+                    class="reader-options-button"
+                    aria-label="Reader options"
+                    aria-controls="reader-options-menu"
+                    aria-expanded="false"
+                >☰</button>
 
-                <div id="font-controls" class="control-group" aria-label="Font size controls">
-                    <button id="font-decrease" type="button" aria-label="Decrease font size">A-</button>
-                    <button id="font-increase" type="button" aria-label="Increase font size">A+</button>
-                </div>
+                <div id="reader-options-menu" class="hud-controls reader-options-menu" aria-label="Reader options">
+                    <div class="control-group nav-group" aria-label="Site navigation">
+                        <a class="button-link inline-link" href="index.html">Home</a>
+                        <a class="button-link inline-link" href="listen.html">Listen</a>
+                    </div>
 
-                <div id="theme-controls" class="control-group" aria-label="Theme controls">
-                    <button type="button" data-theme="light">Paper</button>
-                    <button type="button" data-theme="sepia">Dusk</button>
-                    <button type="button" data-theme="dark">Night</button>
-                </div>
+                    <div id="font-controls" class="control-group" aria-label="Font size controls">
+                        <button id="font-decrease" type="button" aria-label="Decrease font size">A-</button>
+                        <button id="font-increase" type="button" aria-label="Increase font size">A+</button>
+                    </div>
 
-                <div id="window-controls" class="control-group" aria-label="Window controls">
-                    <button id="fullscreen-btn" type="button" aria-pressed="false" title="Toggle fullscreen">Fullscreen</button>
+                    <div id="theme-controls" class="control-group" aria-label="Theme controls">
+                        <button type="button" data-theme="light">Paper</button>
+                        <button type="button" data-theme="sepia">Dusk</button>
+                        <button type="button" data-theme="dark">Night</button>
+                    </div>
+
+                    <div id="window-controls" class="control-group" aria-label="Window controls">
+                        <button id="fullscreen-btn" type="button" aria-pressed="false" title="Toggle fullscreen">Fullscreen</button>
+                    </div>
                 </div>
             </div>
         </nav>
